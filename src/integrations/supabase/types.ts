@@ -14,7 +14,122 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      alertas_configuracao: {
+        Row: {
+          dias_aviso_vencimento: number
+          id: string
+          quantidade_minima_global: number
+        }
+        Insert: {
+          dias_aviso_vencimento?: number
+          id?: string
+          quantidade_minima_global?: number
+        }
+        Update: {
+          dias_aviso_vencimento?: number
+          id?: string
+          quantidade_minima_global?: number
+        }
+        Relationships: []
+      }
+      medicamentos: {
+        Row: {
+          apresentacao: string | null
+          categoria: string | null
+          concentracao: string | null
+          created_at: string
+          data_fabricacao: string | null
+          data_validade: string
+          fabricante: string | null
+          id: string
+          localizacao: string | null
+          nome: string
+          numero_lote: string
+          observacoes: string | null
+          principio_ativo: string | null
+          quantidade_atual: number
+          quantidade_minima: number
+          updated_at: string
+        }
+        Insert: {
+          apresentacao?: string | null
+          categoria?: string | null
+          concentracao?: string | null
+          created_at?: string
+          data_fabricacao?: string | null
+          data_validade: string
+          fabricante?: string | null
+          id?: string
+          localizacao?: string | null
+          nome: string
+          numero_lote: string
+          observacoes?: string | null
+          principio_ativo?: string | null
+          quantidade_atual?: number
+          quantidade_minima?: number
+          updated_at?: string
+        }
+        Update: {
+          apresentacao?: string | null
+          categoria?: string | null
+          concentracao?: string | null
+          created_at?: string
+          data_fabricacao?: string | null
+          data_validade?: string
+          fabricante?: string | null
+          id?: string
+          localizacao?: string | null
+          nome?: string
+          numero_lote?: string
+          observacoes?: string | null
+          principio_ativo?: string | null
+          quantidade_atual?: number
+          quantidade_minima?: number
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      movimentacoes: {
+        Row: {
+          data_movimentacao: string
+          id: string
+          medicamento_id: string
+          motivo: string | null
+          observacoes: string | null
+          quantidade: number
+          responsavel: string | null
+          tipo: string
+        }
+        Insert: {
+          data_movimentacao?: string
+          id?: string
+          medicamento_id: string
+          motivo?: string | null
+          observacoes?: string | null
+          quantidade: number
+          responsavel?: string | null
+          tipo: string
+        }
+        Update: {
+          data_movimentacao?: string
+          id?: string
+          medicamento_id?: string
+          motivo?: string | null
+          observacoes?: string | null
+          quantidade?: number
+          responsavel?: string | null
+          tipo?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "movimentacoes_medicamento_id_fkey"
+            columns: ["medicamento_id"]
+            isOneToOne: false
+            referencedRelation: "medicamentos"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never
