@@ -45,7 +45,7 @@ function DashboardPage() {
 
   const stats = {
     total: meds.length,
-    criticos: meds.filter((m) => m.quantidade_atual <= m.quantidade_minima).length,
+    criticos: meds.filter((m) => m.quantidade_atual < m.quantidade_minima).length,
     vencendo: meds.filter((m) => {
       const s = getStatusValidade(m.data_validade);
       return s === "vence_7" || s === "vence_30";
@@ -57,7 +57,7 @@ function DashboardPage() {
     .filter((m) => ["vencido", "vence_7", "vence_30"].includes(getStatusValidade(m.data_validade)))
     .slice(0, 8);
 
-  const estoqueBaixo = meds.filter((m) => m.quantidade_atual <= m.quantidade_minima);
+  const estoqueBaixo = meds.filter((m) => m.quantidade_atual < m.quantidade_minima);
 
   const porCategoria = Object.entries(
     meds.reduce<Record<string, number>>((acc, m) => {
