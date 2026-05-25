@@ -13,6 +13,12 @@ import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { format, parseISO } from "date-fns";
 import { ptBR } from "date-fns/locale";
+import type { Tables } from "@/integrations/supabase/types";
+
+type MedicamentoResumo = Pick<Tables<"medicamentos">, "id" | "nome" | "numero_lote" | "quantidade_atual">;
+type MovimentacaoComNome = Tables<"movimentacoes"> & {
+  medicamentos: { nome: string; numero_lote: string } | null;
+};
 
 export const Route = createFileRoute("/_app/movimentacoes")({ component: MovimentacoesPage });
 
@@ -31,7 +37,7 @@ function MovimentacoesPage() {
 
   const { data: meds = [] } = useQuery({
     queryKey: ["medicamentos"],
-    queryFn: async () => {
+    queryFn: async (): Promise<MedicamentoResumo[]> => {
       const { data, error } = await supabase.from("medicamentos").select("id, nome, numero_lote, quantidade_atual").order("nome");
       if (error) throw error;
       return data;
@@ -40,18 +46,18 @@ function MovimentacoesPage() {
 
   const { data: movs = [] } = useQuery({
     queryKey: ["movimentacoes"],
-    queryFn: async () => {
+    queryFn: async (): Promise<MovimentacaoComNome[]> => {
       const { data, error } = await supabase
         .from("movimentacoes")
         .select("*, medicamentos(nome, numero_lote)")
         .order("data_movimentacao", { ascending: false })
         .limit(200);
       if (error) throw error;
-      return data;
+      return data as MovimentacaoComNome[];
     },
   });
 
-  const filteredMovs = useMemo(() => movs.filter((m: any) => {
+  const filteredMovs = useMemo(() => movs.filter((m) => {
     if (filterMed !== "all" && m.medicamento_id !== filterMed) return false;
     if (filterTipo !== "all" && m.tipo !== filterTipo) return false;
     return true;
@@ -61,23 +67,19 @@ function MovimentacoesPage() {
     e.preventDefault();
     if (!medId) { toast.error("Selecione um medicamento"); return; }
     if (quantidade < 1) { toast.error("Quantidade inválida"); return; }
-    const med = meds.find((m) => m.id === medId);
-    if (!med) return;
-    if (tipo === "saida" && quantidade > med.quantidade_atual) {
-      toast.error(`Estoque insuficiente. Disponível: ${med.quantidade_atual}`); return;
-    }
     setSaving(true);
-    const novaQtd = tipo === "entrada" ? med.quantidade_atual + quantidade : med.quantidade_atual - quantidade;
 
-    const { error: e1 } = await supabase.from("movimentacoes").insert({
-      medicamento_id: medId, tipo, quantidade,
-      motivo: motivo || null, responsavel: responsavel || null, observacoes: obs || null,
+    const { error } = await supabase.rpc("registrar_movimentacao", {
+      p_medicamento_id: medId,
+      p_tipo: tipo,
+      p_quantidade: quantidade,
+      p_motivo: motivo || null,
+      p_responsavel: responsavel || null,
+      p_observacoes: obs || null,
     });
-    if (e1) { setSaving(false); toast.error(e1.message); return; }
 
-    const { error: e2 } = await supabase.from("medicamentos").update({ quantidade_atual: novaQtd }).eq("id", medId);
     setSaving(false);
-    if (e2) { toast.error(e2.message); return; }
+    if (error) { toast.error(error.message); return; }
 
     toast.success(`${tipo === "entrada" ? "Entrada" : "Saída"} registrada`);
     setMedId(""); setQuantidade(1); setMotivo(""); setResponsavel(""); setObs("");
@@ -180,7 +182,7 @@ function MovimentacoesPage() {
               <TableBody>
                 {filteredMovs.length === 0 ? (
                   <TableRow><TableCell colSpan={6} className="text-center py-8 text-muted-foreground">Sem movimentações.</TableCell></TableRow>
-                ) : filteredMovs.map((m: any) => (
+                ) : filteredMovs.map((m) => (
                   <TableRow key={m.id}>
                     <TableCell className="text-xs text-muted-foreground">{format(parseISO(m.data_movimentacao), "dd/MM/yyyy HH:mm", { locale: ptBR })}</TableCell>
                     <TableCell className="font-medium">{m.medicamentos?.nome ?? "—"}</TableCell>

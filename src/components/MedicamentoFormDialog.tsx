@@ -14,6 +14,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { CATEGORIAS } from "@/lib/medicamento-utils";
 import { differenceInDays, parseISO } from "date-fns";
 import { AlertTriangle } from "lucide-react";
+import type { Tables } from "@/integrations/supabase/types";
 
 const schema = z.object({
   nome: z.string().min(1, "Obrigatório").max(200),
@@ -35,7 +36,7 @@ export type MedicamentoFormValues = z.infer<typeof schema>;
 
 export function MedicamentoFormDialog({
   open, onOpenChange, medicamento,
-}: { open: boolean; onOpenChange: (o: boolean) => void; medicamento?: any }) {
+}: { open: boolean; onOpenChange: (o: boolean) => void; medicamento?: Tables<"medicamentos"> | null }) {
   const qc = useQueryClient();
   const [saving, setSaving] = useState(false);
   const form = useForm<MedicamentoFormValues>({

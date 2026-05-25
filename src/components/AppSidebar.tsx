@@ -11,7 +11,6 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
-import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/use-auth";
 
 const items = [
@@ -24,7 +23,7 @@ const items = [
 
 export function AppSidebar() {
   const pathname = useRouterState({ select: (s) => s.location.pathname });
-  const { user } = useAuth();
+  const { user, signOut } = useAuth();
 
   return (
     <Sidebar collapsible="icon">
@@ -62,7 +61,7 @@ export function AppSidebar() {
           <div className="text-xs text-muted-foreground truncate group-data-[collapsible=icon]:hidden">
             {user?.email}
           </div>
-          <SidebarMenuButton onClick={() => supabase.auth.signOut()} tooltip="Sair">
+          <SidebarMenuButton onClick={signOut} tooltip="Sair">
             <LogOut className="h-4 w-4" />
             <span>Sair</span>
           </SidebarMenuButton>

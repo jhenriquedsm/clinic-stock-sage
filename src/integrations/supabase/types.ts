@@ -135,7 +135,17 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      registrar_movimentacao: {
+        Args: {
+          p_medicamento_id: string
+          p_tipo: string
+          p_quantidade: number
+          p_motivo?: string | null
+          p_responsavel?: string | null
+          p_observacoes?: string | null
+        }
+        Returns: Json
+      }
     }
     Enums: {
       [_ in never]: never

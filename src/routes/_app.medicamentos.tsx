@@ -14,6 +14,7 @@ import { format, parseISO } from "date-fns";
 import { MedicamentoFormDialog } from "@/components/MedicamentoFormDialog";
 import { toast } from "sonner";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
+import type { Tables } from "@/integrations/supabase/types";
 
 export const Route = createFileRoute("/_app/medicamentos")({ component: MedicamentosPage });
 
@@ -27,7 +28,7 @@ function MedicamentosPage() {
   const [filterEst, setFilterEst] = useState<string>("all");
   const [page, setPage] = useState(1);
   const [openForm, setOpenForm] = useState(false);
-  const [editing, setEditing] = useState<any>(null);
+  const [editing, setEditing] = useState<Tables<"medicamentos"> | null>(null);
   const [deleteId, setDeleteId] = useState<string | null>(null);
 
   const { data: meds = [], isLoading } = useQuery({
