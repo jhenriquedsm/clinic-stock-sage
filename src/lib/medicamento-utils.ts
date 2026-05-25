@@ -13,7 +13,7 @@ export function getStatusValidade(dataValidade: string): StatusValidade {
 
 export function getStatusEstoque(atual: number, minima: number): StatusEstoque {
   if (atual <= 0) return "zerado";
-  if (atual <= minima) return "baixo";
+  if (atual < minima) return "baixo";
   return "normal";
 }
 

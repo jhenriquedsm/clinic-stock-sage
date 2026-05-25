@@ -59,7 +59,7 @@ function RelatoriosPage() {
     });
     return { g7, g15, g30 };
   }, [meds]);
-  const estoqueBaixo = useMemo(() => meds.filter((m) => m.quantidade_atual <= m.quantidade_minima), [meds]);
+  const estoqueBaixo = useMemo(() => meds.filter((m) => m.quantidade_atual < m.quantidade_minima), [meds]);
 
   return (
     <div className="space-y-6">
