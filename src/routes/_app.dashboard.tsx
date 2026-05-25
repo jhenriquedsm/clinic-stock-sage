@@ -9,6 +9,12 @@ import { ValidadeBadge, EstoqueBadge } from "@/components/StatusBadge";
 import { format, parseISO } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import { ResponsiveContainer, PieChart, Pie, Cell, Tooltip, Legend } from "recharts";
+import type { Tables } from "@/integrations/supabase/types";
+
+type Medicamento = Tables<"medicamentos">;
+type MovimentacaoComNome = Tables<"movimentacoes"> & {
+  medicamentos: { nome: string } | null;
+};
 
 export const Route = createFileRoute("/_app/dashboard")({ component: DashboardPage });
 
@@ -17,7 +23,7 @@ const CHART_COLORS = ["#3b82f6", "#10b981", "#f59e0b", "#ef4444", "#8b5cf6", "#0
 function DashboardPage() {
   const { data: meds = [] } = useQuery({
     queryKey: ["medicamentos"],
-    queryFn: async () => {
+    queryFn: async (): Promise<Medicamento[]> => {
       const { data, error } = await supabase.from("medicamentos").select("*").order("data_validade");
       if (error) throw error;
       return data;
@@ -26,14 +32,14 @@ function DashboardPage() {
 
   const { data: movs = [] } = useQuery({
     queryKey: ["movimentacoes", "recent"],
-    queryFn: async () => {
+    queryFn: async (): Promise<MovimentacaoComNome[]> => {
       const { data, error } = await supabase
         .from("movimentacoes")
         .select("*, medicamentos(nome)")
         .order("data_movimentacao", { ascending: false })
         .limit(8);
       if (error) throw error;
-      return data;
+      return data as MovimentacaoComNome[];
     },
   });
 
@@ -183,7 +189,7 @@ function DashboardPage() {
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {movs.map((m: any) => (
+                  {movs.map((m) => (
                     <TableRow key={m.id}>
                       <TableCell className="text-muted-foreground text-xs">
                         {format(parseISO(m.data_movimentacao), "dd/MM HH:mm", { locale: ptBR })}

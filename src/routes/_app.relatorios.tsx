@@ -9,10 +9,16 @@ import { supabase } from "@/integrations/supabase/client";
 import { getStatusValidade } from "@/lib/medicamento-utils";
 import { ValidadeBadge } from "@/components/StatusBadge";
 import { format, parseISO, differenceInDays } from "date-fns";
+import type { Tables } from "@/integrations/supabase/types";
+
+type Medicamento = Tables<"medicamentos">;
+type MovimentacaoComNome = Tables<"movimentacoes"> & {
+  medicamentos: { nome: string; numero_lote: string } | null;
+};
 
 export const Route = createFileRoute("/_app/relatorios")({ component: RelatoriosPage });
 
-function csvDownload(filename: string, rows: any[]) {
+function csvDownload(filename: string, rows: Record<string, unknown>[]) {
   if (rows.length === 0) return;
   const headers = Object.keys(rows[0]);
   const csv = [headers.join(","), ...rows.map((r) => headers.map((h) => `"${String(r[h] ?? "").replace(/"/g, '""')}"`).join(","))].join("\n");
@@ -26,7 +32,7 @@ function csvDownload(filename: string, rows: any[]) {
 function RelatoriosPage() {
   const { data: meds = [] } = useQuery({
     queryKey: ["medicamentos"],
-    queryFn: async () => {
+    queryFn: async (): Promise<Medicamento[]> => {
       const { data, error } = await supabase.from("medicamentos").select("*").order("data_validade");
       if (error) throw error;
       return data;
@@ -35,16 +41,16 @@ function RelatoriosPage() {
 
   const { data: movs = [] } = useQuery({
     queryKey: ["movimentacoes"],
-    queryFn: async () => {
+    queryFn: async (): Promise<MovimentacaoComNome[]> => {
       const { data, error } = await supabase.from("movimentacoes").select("*, medicamentos(nome, numero_lote)").order("data_movimentacao", { ascending: false }).limit(500);
       if (error) throw error;
-      return data;
+      return data as MovimentacaoComNome[];
     },
   });
 
   const vencidos = useMemo(() => meds.filter((m) => getStatusValidade(m.data_validade) === "vencido"), [meds]);
   const grupos = useMemo(() => {
-    const g7: any[] = [], g15: any[] = [], g30: any[] = [];
+    const g7: Medicamento[] = [], g15: Medicamento[] = [], g30: Medicamento[] = [];
     meds.forEach((m) => {
       const d = differenceInDays(parseISO(m.data_validade), new Date());
       if (d >= 0 && d <= 7) g7.push(m);
@@ -114,7 +120,7 @@ function RelatoriosPage() {
           <Table>
             <TableHeader><TableRow><TableHead>Data</TableHead><TableHead>Medicamento</TableHead><TableHead>Tipo</TableHead><TableHead className="text-right">Qtd</TableHead><TableHead>Motivo</TableHead></TableRow></TableHeader>
             <TableBody>
-              {movs.slice(0, 50).map((m: any) => (
+              {movs.slice(0, 50).map((m) => (
                 <TableRow key={m.id}>
                   <TableCell className="text-xs">{format(parseISO(m.data_movimentacao), "dd/MM/yyyy HH:mm")}</TableCell>
                   <TableCell>{m.medicamentos?.nome ?? "—"}</TableCell>
@@ -131,7 +137,7 @@ function RelatoriosPage() {
   );
 }
 
-function RelatorioSection({ title, rows, onExport }: { title: string; rows: any[]; onExport: () => void }) {
+function RelatorioSection({ title, rows, onExport }: { title: string; rows: Medicamento[]; onExport: () => void }) {
   return (
     <Card>
       <CardHeader className="flex flex-row items-center justify-between">
