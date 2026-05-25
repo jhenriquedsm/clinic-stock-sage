@@ -33,7 +33,7 @@ export function AppSidebar() {
             <Activity className="h-5 w-5" />
           </div>
           <div className="flex flex-col group-data-[collapsible=icon]:hidden">
-            <span className="text-sm font-semibold leading-tight">MedControl</span>
+            <span className="text-sm font-semibold leading-tight">Docctor Lab</span>
             <span className="text-xs text-muted-foreground leading-tight">Gestão de Laboratório</span>
           </div>
         </div>
