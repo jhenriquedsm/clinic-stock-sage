@@ -178,7 +178,16 @@ export function AdministracaoFormDialog({
             </Field>
 
             <Field label="Responsável pela Aplicação" className="col-span-2">
-              <Input {...form.register("responsavel")} placeholder="Nome de quem aplicou" />
+              <Select
+                value={form.watch("responsavel") || ""}
+                onValueChange={(v) => form.setValue("responsavel", v)}
+              >
+                <SelectTrigger><SelectValue placeholder="Selecione" /></SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="AMANDA">AMANDA</SelectItem>
+                  <SelectItem value="CAROL">CAROL</SelectItem>
+                </SelectContent>
+              </Select>
             </Field>
           </div>
 
