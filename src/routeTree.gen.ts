@@ -17,6 +17,7 @@ import { Route as AppMovimentacoesRouteImport } from './routes/_app.movimentacoe
 import { Route as AppMedicamentosRouteImport } from './routes/_app.medicamentos'
 import { Route as AppDashboardRouteImport } from './routes/_app.dashboard'
 import { Route as AppConfiguracoesRouteImport } from './routes/_app.configuracoes'
+import { Route as AppAdministracoesRouteImport } from './routes/_app.administracoes'
 
 const LoginRoute = LoginRouteImport.update({
   id: '/login',
@@ -32,6 +33,12 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AppAdministracoesRoute = AppAdministracoesRouteImport.update({
+  id: '/administracoes',
+  path: '/administracoes',
+  getParentRoute: () => AppRoute,
+} as any)
+
 const AppRelatoriosRoute = AppRelatoriosRouteImport.update({
   id: '/relatorios',
   path: '/relatorios',
@@ -61,6 +68,7 @@ const AppConfiguracoesRoute = AppConfiguracoesRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/login': typeof LoginRoute
+  '/administracoes': typeof AppAdministracoesRoute
   '/configuracoes': typeof AppConfiguracoesRoute
   '/dashboard': typeof AppDashboardRoute
   '/medicamentos': typeof AppMedicamentosRoute
@@ -70,6 +78,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/login': typeof LoginRoute
+  '/administracoes': typeof AppAdministracoesRoute
   '/configuracoes': typeof AppConfiguracoesRoute
   '/dashboard': typeof AppDashboardRoute
   '/medicamentos': typeof AppMedicamentosRoute
@@ -81,6 +90,7 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/_app': typeof AppRouteWithChildren
   '/login': typeof LoginRoute
+  '/_app/administracoes': typeof AppAdministracoesRoute
   '/_app/configuracoes': typeof AppConfiguracoesRoute
   '/_app/dashboard': typeof AppDashboardRoute
   '/_app/medicamentos': typeof AppMedicamentosRoute
@@ -92,6 +102,7 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/login'
+    | '/administracoes'
     | '/configuracoes'
     | '/dashboard'
     | '/medicamentos'
@@ -101,6 +112,7 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/login'
+    | '/administracoes'
     | '/configuracoes'
     | '/dashboard'
     | '/medicamentos'
@@ -111,6 +123,7 @@ export interface FileRouteTypes {
     | '/'
     | '/_app'
     | '/login'
+    | '/_app/administracoes'
     | '/_app/configuracoes'
     | '/_app/dashboard'
     | '/_app/medicamentos'
@@ -146,6 +159,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/_app/administracoes': {
+      id: '/_app/administracoes'
+      path: '/administracoes'
+      fullPath: '/administracoes'
+      preLoaderRoute: typeof AppAdministracoesRouteImport
+      parentRoute: typeof AppRoute
     }
     '/_app/relatorios': {
       id: '/_app/relatorios'
@@ -186,6 +206,7 @@ declare module '@tanstack/react-router' {
 }
 
 interface AppRouteChildren {
+  AppAdministracoesRoute: typeof AppAdministracoesRoute
   AppConfiguracoesRoute: typeof AppConfiguracoesRoute
   AppDashboardRoute: typeof AppDashboardRoute
   AppMedicamentosRoute: typeof AppMedicamentosRoute
@@ -194,6 +215,7 @@ interface AppRouteChildren {
 }
 
 const AppRouteChildren: AppRouteChildren = {
+  AppAdministracoesRoute: AppAdministracoesRoute,
   AppConfiguracoesRoute: AppConfiguracoesRoute,
   AppDashboardRoute: AppDashboardRoute,
   AppMedicamentosRoute: AppMedicamentosRoute,

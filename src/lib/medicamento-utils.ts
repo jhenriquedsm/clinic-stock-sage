@@ -30,6 +30,17 @@ export const STATUS_ESTOQUE_LABEL: Record<StatusEstoque, string> = {
   normal: "Normal",
 };
 
+export const VIAS_ADMINISTRACAO = [
+  { value: "SC", label: "SC — Subcutânea" },
+  { value: "IM", label: "IM — Intramuscular" },
+  { value: "IV", label: "IV — Intravenosa" },
+  { value: "VO", label: "VO — Via Oral" },
+  { value: "Tópica", label: "Tópica" },
+  { value: "Outra", label: "Outra" },
+];
+
+export const UNIDADES_DOSE = ["mL", "mg", "mcg", "UI", "unidade"];
+
 export const CATEGORIAS = [
   "Antibiótico",
   "Analgésico",

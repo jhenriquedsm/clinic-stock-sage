@@ -1,5 +1,5 @@
 import { Link, useRouterState } from "@tanstack/react-router";
-import { LayoutDashboard, Pill, ArrowLeftRight, FileBarChart, Settings, LogOut, Activity } from "lucide-react";
+import { LayoutDashboard, Pill, ArrowLeftRight, FileBarChart, Settings, LogOut, Activity, Syringe } from "lucide-react";
 import {
   Sidebar,
   SidebarContent,
@@ -16,6 +16,7 @@ import { useAuth } from "@/hooks/use-auth";
 const items = [
   { title: "Dashboard", url: "/dashboard", icon: LayoutDashboard },
   { title: "Medicamentos", url: "/medicamentos", icon: Pill },
+  { title: "Administrações", url: "/administracoes", icon: Syringe },
   { title: "Movimentações", url: "/movimentacoes", icon: ArrowLeftRight },
   { title: "Relatórios", url: "/relatorios", icon: FileBarChart },
   { title: "Configurações", url: "/configuracoes", icon: Settings },
