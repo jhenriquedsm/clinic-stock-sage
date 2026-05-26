@@ -20,7 +20,10 @@ const schema = z.object({
   dose_aplicada: z.coerce.number().positive("Deve ser maior que zero"),
   unidade_dose: z.string().min(1, "Obrigatório"),
   unidades_consumidas: z.coerce.number().int().min(1, "Mínimo 1"),
-  data_administracao: z.string().min(1, "Obrigatório"),
+  data_administracao: z.string().min(1, "Obrigatório").refine(
+    (val) => new Date(val) <= new Date(),
+    "A data não pode ser no futuro"
+  ),
   responsavel: z.string().max(200).optional().or(z.literal("")),
   via_administracao: z.string().optional().or(z.literal("")),
   observacoes: z.string().max(1000).optional().or(z.literal("")),
