@@ -14,6 +14,66 @@ export type Database = {
   }
   public: {
     Tables: {
+      administracoes: {
+        Row: {
+          created_at: string
+          data_administracao: string
+          dose_aplicada: number
+          id: string
+          medicamento_id: string
+          movimentacao_id: string | null
+          observacoes: string | null
+          paciente_nome: string
+          responsavel: string | null
+          unidade_dose: string
+          unidades_consumidas: number
+          via_administracao: string | null
+        }
+        Insert: {
+          created_at?: string
+          data_administracao?: string
+          dose_aplicada: number
+          id?: string
+          medicamento_id: string
+          movimentacao_id?: string | null
+          observacoes?: string | null
+          paciente_nome: string
+          responsavel?: string | null
+          unidade_dose: string
+          unidades_consumidas?: number
+          via_administracao?: string | null
+        }
+        Update: {
+          created_at?: string
+          data_administracao?: string
+          dose_aplicada?: number
+          id?: string
+          medicamento_id?: string
+          movimentacao_id?: string | null
+          observacoes?: string | null
+          paciente_nome?: string
+          responsavel?: string | null
+          unidade_dose?: string
+          unidades_consumidas?: number
+          via_administracao?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "administracoes_medicamento_id_fkey"
+            columns: ["medicamento_id"]
+            isOneToOne: false
+            referencedRelation: "medicamentos"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "administracoes_movimentacao_id_fkey"
+            columns: ["movimentacao_id"]
+            isOneToOne: false
+            referencedRelation: "movimentacoes"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       alertas_configuracao: {
         Row: {
           dias_aviso_vencimento: number
@@ -141,6 +201,20 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      registrar_administracao: {
+        Args: {
+          p_medicamento_id: string
+          p_paciente_nome: string
+          p_dose_aplicada: number
+          p_unidade_dose: string
+          p_unidades_consumidas: number
+          p_data_administracao?: string
+          p_responsavel?: string | null
+          p_via_administracao?: string | null
+          p_observacoes?: string | null
+        }
+        Returns: Json
+      }
       registrar_movimentacao: {
         Args: {
           p_medicamento_id: string
