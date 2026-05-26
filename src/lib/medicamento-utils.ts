@@ -36,6 +36,8 @@ export const CATEGORIAS = [
   "Anti-inflamatório",
   "Antialérgico",
   "Antipirético",
+  "Antidiabético / Anti-obesidade",
+  "Hormônio",
   "Vitamina",
   "Vacina",
   "Anestésico",

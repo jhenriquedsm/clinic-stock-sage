@@ -6,7 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Plus, Search, Pencil, Trash2 } from "lucide-react";
+import { Plus, Search, Pencil, Trash2, ShieldAlert, Snowflake } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { getStatusValidade, getStatusEstoque, CATEGORIAS } from "@/lib/medicamento-utils";
 import { ValidadeBadge, EstoqueBadge } from "@/components/StatusBadge";
@@ -131,7 +131,19 @@ function MedicamentosPage() {
                 ) : pageItems.map((m) => (
                   <TableRow key={m.id}>
                     <TableCell>
-                      <div className="font-medium">{m.nome}</div>
+                      <div className="flex items-center gap-1.5 font-medium">
+                        {m.nome}
+                        {m.controlado && (
+                          <span title="Medicamento controlado (Lista C)">
+                            <ShieldAlert className="h-3.5 w-3.5 text-amber-500 shrink-0" />
+                          </span>
+                        )}
+                        {m.requer_refrigeracao && (
+                          <span title="Requer refrigeração (2–8°C)">
+                            <Snowflake className="h-3.5 w-3.5 text-sky-500 shrink-0" />
+                          </span>
+                        )}
+                      </div>
                       {m.concentracao && <div className="text-xs text-muted-foreground">{m.concentracao} • {m.apresentacao}</div>}
                     </TableCell>
                     <TableCell className="font-mono text-xs">{m.numero_lote}</TableCell>

@@ -37,6 +37,7 @@ export type Database = {
           apresentacao: string | null
           categoria: string | null
           concentracao: string | null
+          controlado: boolean
           created_at: string
           data_fabricacao: string | null
           data_validade: string
@@ -49,12 +50,14 @@ export type Database = {
           principio_ativo: string | null
           quantidade_atual: number
           quantidade_minima: number
+          requer_refrigeracao: boolean
           updated_at: string
         }
         Insert: {
           apresentacao?: string | null
           categoria?: string | null
           concentracao?: string | null
+          controlado?: boolean
           created_at?: string
           data_fabricacao?: string | null
           data_validade: string
@@ -67,12 +70,14 @@ export type Database = {
           principio_ativo?: string | null
           quantidade_atual?: number
           quantidade_minima?: number
+          requer_refrigeracao?: boolean
           updated_at?: string
         }
         Update: {
           apresentacao?: string | null
           categoria?: string | null
           concentracao?: string | null
+          controlado?: boolean
           created_at?: string
           data_fabricacao?: string | null
           data_validade?: string
@@ -85,6 +90,7 @@ export type Database = {
           principio_ativo?: string | null
           quantidade_atual?: number
           quantidade_minima?: number
+          requer_refrigeracao?: boolean
           updated_at?: string
         }
         Relationships: []
