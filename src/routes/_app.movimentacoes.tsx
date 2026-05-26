@@ -37,6 +37,7 @@ function MovimentacoesPage() {
 
   const { data: meds = [] } = useQuery({
     queryKey: ["medicamentos"],
+    staleTime: 2 * 60 * 1000,
     queryFn: async (): Promise<MedicamentoResumo[]> => {
       const { data, error } = await supabase.from("medicamentos").select("id, nome, numero_lote, quantidade_atual").order("nome");
       if (error) throw error;
@@ -46,6 +47,7 @@ function MovimentacoesPage() {
 
   const { data: movs = [] } = useQuery({
     queryKey: ["movimentacoes"],
+    staleTime: 2 * 60 * 1000,
     queryFn: async (): Promise<MovimentacaoComNome[]> => {
       const { data, error } = await supabase
         .from("movimentacoes")

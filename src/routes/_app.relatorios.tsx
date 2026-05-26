@@ -32,6 +32,7 @@ function csvDownload(filename: string, rows: Record<string, unknown>[]) {
 function RelatoriosPage() {
   const { data: meds = [], isLoading: loadingMeds } = useQuery({
     queryKey: ["medicamentos"],
+    staleTime: 2 * 60 * 1000,
     queryFn: async (): Promise<Medicamento[]> => {
       const { data, error } = await supabase.from("medicamentos").select("*").order("data_validade");
       if (error) throw error;
@@ -41,6 +42,7 @@ function RelatoriosPage() {
 
   const { data: movs = [], isLoading: loadingMovs } = useQuery({
     queryKey: ["movimentacoes"],
+    staleTime: 2 * 60 * 1000,
     queryFn: async (): Promise<MovimentacaoComNome[]> => {
       const { data, error } = await supabase.from("movimentacoes").select("*, medicamentos(nome, numero_lote)").order("data_movimentacao", { ascending: false }).limit(500);
       if (error) throw error;

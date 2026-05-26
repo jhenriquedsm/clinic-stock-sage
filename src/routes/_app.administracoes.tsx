@@ -31,6 +31,7 @@ function AdministracoesPage() {
 
   const { data: administracoes = [], isLoading } = useQuery({
     queryKey: ["administracoes"],
+    staleTime: 2 * 60 * 1000,
     queryFn: async () => {
       const { data, error } = await supabase
         .from("administracoes")
@@ -43,6 +44,7 @@ function AdministracoesPage() {
 
   const { data: medicamentos = [] } = useQuery({
     queryKey: ["medicamentos"],
+    staleTime: 2 * 60 * 1000,
     queryFn: async () => {
       const { data, error } = await supabase.from("medicamentos").select("*").order("nome");
       if (error) throw error;

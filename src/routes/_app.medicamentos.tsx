@@ -33,6 +33,7 @@ function MedicamentosPage() {
 
   const { data: meds = [], isLoading } = useQuery({
     queryKey: ["medicamentos"],
+    staleTime: 2 * 60 * 1000,
     queryFn: async () => {
       const { data, error } = await supabase.from("medicamentos").select("*").order("nome");
       if (error) throw error;
