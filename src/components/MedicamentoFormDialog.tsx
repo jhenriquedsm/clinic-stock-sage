@@ -12,6 +12,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { supabase } from "@/integrations/supabase/client";
 import { useQueryClient } from "@tanstack/react-query";
 import { CATEGORIAS } from "@/lib/medicamento-utils";
+import { FormField as Field } from "@/components/FormField";
 import { differenceInDays, parseISO } from "date-fns";
 import { AlertTriangle, Snowflake, ShieldAlert } from "lucide-react";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -197,12 +198,3 @@ export function MedicamentoFormDialog({
   );
 }
 
-function Field({ label, children, error }: { label: string; children: React.ReactNode; error?: string }) {
-  return (
-    <div className="space-y-1.5">
-      <Label className="text-sm">{label}</Label>
-      {children}
-      {error && <p className="text-xs text-destructive">{error}</p>}
-    </div>
-  );
-}
