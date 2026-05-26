@@ -123,7 +123,7 @@ function RelatoriosPage() {
       <Card>
         <CardHeader className="flex flex-row items-center justify-between">
           <CardTitle className="text-base">Histórico de Movimentações (últimas 500)</CardTitle>
-          <Button size="sm" variant="outline" onClick={() => csvDownload("movimentacoes.csv", movs.map((m: any) => ({ data: m.data_movimentacao, medicamento: m.medicamentos?.nome, tipo: m.tipo, quantidade: m.quantidade, motivo: m.motivo, responsavel: m.responsavel })))}>
+          <Button size="sm" variant="outline" onClick={() => csvDownload("movimentacoes.csv", movs.map((m) => ({ data: m.data_movimentacao, medicamento: m.medicamentos?.nome, tipo: m.tipo, quantidade: m.quantidade, motivo: m.motivo, responsavel: m.responsavel })))}>
             <Download className="h-4 w-4 mr-2" /> CSV
           </Button>
         </CardHeader>
