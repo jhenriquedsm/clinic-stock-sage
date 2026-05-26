@@ -13,7 +13,8 @@ import { supabase } from "@/integrations/supabase/client";
 import { useQueryClient } from "@tanstack/react-query";
 import { CATEGORIAS } from "@/lib/medicamento-utils";
 import { differenceInDays, parseISO } from "date-fns";
-import { AlertTriangle } from "lucide-react";
+import { AlertTriangle, Snowflake, ShieldAlert } from "lucide-react";
+import { Checkbox } from "@/components/ui/checkbox";
 import type { Tables } from "@/integrations/supabase/types";
 
 const schema = z.object({
@@ -30,6 +31,8 @@ const schema = z.object({
   data_validade: z.string().min(1, "Obrigatório"),
   localizacao: z.string().max(200).optional().or(z.literal("")),
   observacoes: z.string().max(1000).optional().or(z.literal("")),
+  controlado: z.boolean(),
+  requer_refrigeracao: z.boolean(),
 });
 
 export type MedicamentoFormValues = z.infer<typeof schema>;
@@ -55,10 +58,13 @@ export function MedicamentoFormDialog({
       data_validade: medicamento.data_validade,
       localizacao: medicamento.localizacao ?? "",
       observacoes: medicamento.observacoes ?? "",
+      controlado: medicamento.controlado,
+      requer_refrigeracao: medicamento.requer_refrigeracao,
     } : {
       nome: "", principio_ativo: "", fabricante: "", numero_lote: "", categoria: "",
       apresentacao: "", concentracao: "", quantidade_atual: 0, quantidade_minima: 10,
       data_fabricacao: "", data_validade: "", localizacao: "", observacoes: "",
+      controlado: false, requer_refrigeracao: false,
     },
   });
 
@@ -77,6 +83,8 @@ export function MedicamentoFormDialog({
       data_fabricacao: values.data_fabricacao || null,
       localizacao: values.localizacao || null,
       observacoes: values.observacoes || null,
+      controlado: values.controlado,
+      requer_refrigeracao: values.requer_refrigeracao,
     };
     const { error } = medicamento
       ? await supabase.from("medicamentos").update(payload).eq("id", medicamento.id)
@@ -144,6 +152,32 @@ export function MedicamentoFormDialog({
               )}
             </Field>
           </div>
+
+          <div className="flex gap-6">
+            <label className="flex items-center gap-2 cursor-pointer select-none">
+              <Checkbox
+                id="controlado"
+                checked={form.watch("controlado")}
+                onCheckedChange={(v) => form.setValue("controlado", !!v)}
+              />
+              <span className="flex items-center gap-1.5 text-sm font-medium">
+                <ShieldAlert className="h-4 w-4 text-amber-500" />
+                Medicamento controlado (Lista C)
+              </span>
+            </label>
+            <label className="flex items-center gap-2 cursor-pointer select-none">
+              <Checkbox
+                id="requer_refrigeracao"
+                checked={form.watch("requer_refrigeracao")}
+                onCheckedChange={(v) => form.setValue("requer_refrigeracao", !!v)}
+              />
+              <span className="flex items-center gap-1.5 text-sm font-medium">
+                <Snowflake className="h-4 w-4 text-sky-500" />
+                Requer refrigeração (2–8°C)
+              </span>
+            </label>
+          </div>
+
           <Field label="Observações">
             <Textarea rows={3} {...form.register("observacoes")} />
           </Field>
