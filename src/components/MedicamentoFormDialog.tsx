@@ -33,7 +33,13 @@ const schema = z.object({
   observacoes: z.string().max(1000).optional().or(z.literal("")),
   controlado: z.boolean(),
   requer_refrigeracao: z.boolean(),
-});
+}).refine(
+  (data) => {
+    if (!data.data_fabricacao) return true;
+    return new Date(data.data_fabricacao) <= new Date(data.data_validade);
+  },
+  { message: "Data de fabricação não pode ser posterior à validade", path: ["data_fabricacao"] }
+);
 
 export type MedicamentoFormValues = z.infer<typeof schema>;
 
