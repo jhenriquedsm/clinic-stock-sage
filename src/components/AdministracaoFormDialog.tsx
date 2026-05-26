@@ -63,6 +63,12 @@ export function AdministracaoFormDialog({
   const selectedMed = medicamentos.find((m) => m.id === selectedMedId);
 
   async function onSubmit(values: FormValues) {
+    if (selectedMed && values.unidades_consumidas > selectedMed.quantidade_atual) {
+      form.setError("unidades_consumidas", {
+        message: `Estoque insuficiente. Disponível: ${selectedMed.quantidade_atual}`,
+      });
+      return;
+    }
     setSaving(true);
     const { error } = await supabase.rpc("registrar_administracao", {
       p_medicamento_id: values.medicamento_id,
