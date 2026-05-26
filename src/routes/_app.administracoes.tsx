@@ -147,7 +147,7 @@ function AdministracoesPage() {
                     </TableCell>
                     <TableCell className="text-sm text-muted-foreground">{a.responsavel ?? "—"}</TableCell>
                     <TableCell>
-                      <Button variant="ghost" size="icon" onClick={() => setDeleteId(a.id)}>
+                      <Button variant="ghost" size="icon" aria-label="Excluir registro de administração" onClick={() => setDeleteId(a.id)}>
                         <Trash2 className="h-4 w-4 text-destructive" />
                       </Button>
                     </TableCell>

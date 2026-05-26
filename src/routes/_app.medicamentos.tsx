@@ -155,10 +155,10 @@ function MedicamentosPage() {
                     <TableCell><EstoqueBadge status={getStatusEstoque(m.quantidade_atual, m.quantidade_minima)} /></TableCell>
                     <TableCell>
                       <div className="flex gap-1">
-                        <Button variant="ghost" size="icon" onClick={() => { setEditing(m); setOpenForm(true); }}>
+                        <Button variant="ghost" size="icon" aria-label="Editar medicamento" onClick={() => { setEditing(m); setOpenForm(true); }}>
                           <Pencil className="h-4 w-4" />
                         </Button>
-                        <Button variant="ghost" size="icon" onClick={() => setDeleteId(m.id)}>
+                        <Button variant="ghost" size="icon" aria-label="Excluir medicamento" onClick={() => setDeleteId(m.id)}>
                           <Trash2 className="h-4 w-4 text-destructive" />
                         </Button>
                       </div>
