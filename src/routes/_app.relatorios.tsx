@@ -4,7 +4,7 @@ import { useMemo } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Download, Printer } from "lucide-react";
+import { Download, Printer, Loader2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { getStatusValidade } from "@/lib/medicamento-utils";
 import { ValidadeBadge } from "@/components/StatusBadge";
@@ -30,7 +30,7 @@ function csvDownload(filename: string, rows: Record<string, unknown>[]) {
 }
 
 function RelatoriosPage() {
-  const { data: meds = [] } = useQuery({
+  const { data: meds = [], isLoading: loadingMeds } = useQuery({
     queryKey: ["medicamentos"],
     queryFn: async (): Promise<Medicamento[]> => {
       const { data, error } = await supabase.from("medicamentos").select("*").order("data_validade");
@@ -39,7 +39,7 @@ function RelatoriosPage() {
     },
   });
 
-  const { data: movs = [] } = useQuery({
+  const { data: movs = [], isLoading: loadingMovs } = useQuery({
     queryKey: ["movimentacoes"],
     queryFn: async (): Promise<MovimentacaoComNome[]> => {
       const { data, error } = await supabase.from("movimentacoes").select("*, medicamentos(nome, numero_lote)").order("data_movimentacao", { ascending: false }).limit(500);
@@ -47,6 +47,15 @@ function RelatoriosPage() {
       return data as MovimentacaoComNome[];
     },
   });
+
+  if (loadingMeds || loadingMovs) {
+    return (
+      <div className="flex flex-col items-center justify-center gap-3 py-24 text-muted-foreground">
+        <Loader2 className="h-8 w-8 animate-spin" />
+        <span className="text-sm">Carregando relatórios…</span>
+      </div>
+    );
+  }
 
   const vencidos = useMemo(() => meds.filter((m) => getStatusValidade(m.data_validade) === "vencido"), [meds]);
   const grupos = useMemo(() => {
