@@ -12,6 +12,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { supabase } from "@/integrations/supabase/client";
 import { useQueryClient } from "@tanstack/react-query";
 import { CATEGORIAS } from "@/lib/medicamento-utils";
+import { FormField as Field } from "@/components/FormField";
 import { differenceInDays, parseISO } from "date-fns";
 import { AlertTriangle, Snowflake, ShieldAlert } from "lucide-react";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -33,7 +34,13 @@ const schema = z.object({
   observacoes: z.string().max(1000).optional().or(z.literal("")),
   controlado: z.boolean(),
   requer_refrigeracao: z.boolean(),
-});
+}).refine(
+  (data) => {
+    if (!data.data_fabricacao) return true;
+    return new Date(data.data_fabricacao) <= new Date(data.data_validade);
+  },
+  { message: "Data de fabricação não pode ser posterior à validade", path: ["data_fabricacao"] }
+);
 
 export type MedicamentoFormValues = z.infer<typeof schema>;
 
@@ -191,12 +198,3 @@ export function MedicamentoFormDialog({
   );
 }
 
-function Field({ label, children, error }: { label: string; children: React.ReactNode; error?: string }) {
-  return (
-    <div className="space-y-1.5">
-      <Label className="text-sm">{label}</Label>
-      {children}
-      {error && <p className="text-xs text-destructive">{error}</p>}
-    </div>
-  );
-}

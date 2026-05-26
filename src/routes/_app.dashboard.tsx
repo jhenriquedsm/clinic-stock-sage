@@ -23,6 +23,7 @@ const CHART_COLORS = ["#3b82f6", "#10b981", "#f59e0b", "#ef4444", "#8b5cf6", "#0
 function DashboardPage() {
   const { data: meds = [] } = useQuery({
     queryKey: ["medicamentos"],
+    staleTime: 2 * 60 * 1000,
     queryFn: async (): Promise<Medicamento[]> => {
       const { data, error } = await supabase.from("medicamentos").select("*").order("data_validade");
       if (error) throw error;
@@ -32,6 +33,7 @@ function DashboardPage() {
 
   const { data: movs = [] } = useQuery({
     queryKey: ["movimentacoes", "recent"],
+    staleTime: 2 * 60 * 1000,
     queryFn: async (): Promise<MovimentacaoComNome[]> => {
       const { data, error } = await supabase
         .from("movimentacoes")

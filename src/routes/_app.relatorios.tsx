@@ -4,7 +4,7 @@ import { useMemo } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Download, Printer } from "lucide-react";
+import { Download, Printer, Loader2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { getStatusValidade } from "@/lib/medicamento-utils";
 import { ValidadeBadge } from "@/components/StatusBadge";
@@ -14,6 +14,9 @@ import type { Tables } from "@/integrations/supabase/types";
 type Medicamento = Tables<"medicamentos">;
 type MovimentacaoComNome = Tables<"movimentacoes"> & {
   medicamentos: { nome: string; numero_lote: string } | null;
+};
+type AdministracaoComMed = Tables<"administracoes"> & {
+  medicamentos: { nome: string; concentracao: string | null } | null;
 };
 
 export const Route = createFileRoute("/_app/relatorios")({ component: RelatoriosPage });
@@ -30,8 +33,9 @@ function csvDownload(filename: string, rows: Record<string, unknown>[]) {
 }
 
 function RelatoriosPage() {
-  const { data: meds = [] } = useQuery({
+  const { data: meds = [], isLoading: loadingMeds } = useQuery({
     queryKey: ["medicamentos"],
+    staleTime: 2 * 60 * 1000,
     queryFn: async (): Promise<Medicamento[]> => {
       const { data, error } = await supabase.from("medicamentos").select("*").order("data_validade");
       if (error) throw error;
@@ -39,14 +43,51 @@ function RelatoriosPage() {
     },
   });
 
-  const { data: movs = [] } = useQuery({
+  const { data: adms = [], isLoading: loadingAdms } = useQuery({
+    queryKey: ["administracoes"],
+    staleTime: 2 * 60 * 1000,
+    queryFn: async (): Promise<AdministracaoComMed[]> => {
+      const { data, error } = await supabase
+        .from("administracoes")
+        .select("*, medicamentos(nome, concentracao)")
+        .order("data_administracao", { ascending: false });
+      if (error) throw error;
+      return data as AdministracaoComMed[];
+    },
+  });
+
+  const { data: movs = [], isLoading: loadingMovs } = useQuery({
     queryKey: ["movimentacoes"],
+    staleTime: 2 * 60 * 1000,
     queryFn: async (): Promise<MovimentacaoComNome[]> => {
       const { data, error } = await supabase.from("movimentacoes").select("*, medicamentos(nome, numero_lote)").order("data_movimentacao", { ascending: false }).limit(500);
       if (error) throw error;
       return data as MovimentacaoComNome[];
     },
   });
+
+  const admsporPaciente = useMemo(() => {
+    const map = new Map<string, { count: number; ultima: string; meds: Set<string> }>();
+    adms.forEach((a) => {
+      const entry = map.get(a.paciente_nome) ?? { count: 0, ultima: a.data_administracao, meds: new Set() };
+      entry.count += 1;
+      if (a.data_administracao > entry.ultima) entry.ultima = a.data_administracao;
+      if (a.medicamentos?.nome) entry.meds.add(a.medicamentos.nome);
+      map.set(a.paciente_nome, entry);
+    });
+    return Array.from(map.entries())
+      .map(([paciente, v]) => ({ paciente, ...v }))
+      .sort((a, b) => b.ultima.localeCompare(a.ultima));
+  }, [adms]);
+
+  if (loadingMeds || loadingMovs || loadingAdms) {
+    return (
+      <div className="flex flex-col items-center justify-center gap-3 py-24 text-muted-foreground">
+        <Loader2 className="h-8 w-8 animate-spin" />
+        <span className="text-sm">Carregando relatórios…</span>
+      </div>
+    );
+  }
 
   const vencidos = useMemo(() => meds.filter((m) => getStatusValidade(m.data_validade) === "vencido"), [meds]);
   const grupos = useMemo(() => {
@@ -111,8 +152,55 @@ function RelatoriosPage() {
 
       <Card>
         <CardHeader className="flex flex-row items-center justify-between">
+          <CardTitle className="text-base">Administrações por Paciente ({admsporPaciente.length})</CardTitle>
+          <Button size="sm" variant="outline" disabled={adms.length === 0}
+            onClick={() => csvDownload("administracoes.csv", adms.map((a) => ({
+              data: format(parseISO(a.data_administracao), "dd/MM/yyyy HH:mm"),
+              paciente: a.paciente_nome,
+              medicamento: a.medicamentos?.nome ?? "",
+              concentracao: a.medicamentos?.concentracao ?? "",
+              dose: `${Number(a.dose_aplicada)} ${a.unidade_dose}`,
+              via: a.via_administracao ?? "",
+              responsavel: a.responsavel ?? "",
+              observacoes: a.observacoes ?? "",
+            })))}>
+            <Download className="h-4 w-4 mr-2" /> CSV
+          </Button>
+        </CardHeader>
+        <CardContent>
+          {admsporPaciente.length === 0
+            ? <p className="text-sm text-muted-foreground py-4">Nenhuma administração registrada.</p>
+            : (
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Paciente</TableHead>
+                    <TableHead className="text-right">Aplicações</TableHead>
+                    <TableHead>Medicamentos</TableHead>
+                    <TableHead>Última Aplicação</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {admsporPaciente.map((p) => (
+                    <TableRow key={p.paciente}>
+                      <TableCell className="font-medium">{p.paciente}</TableCell>
+                      <TableCell className="text-right font-mono">{p.count}</TableCell>
+                      <TableCell className="text-sm text-muted-foreground">{Array.from(p.meds).join(", ")}</TableCell>
+                      <TableCell className="text-sm tabular-nums">
+                        {format(parseISO(p.ultima), "dd/MM/yyyy HH:mm")}
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            )}
+        </CardContent>
+      </Card>
+
+      <Card>
+        <CardHeader className="flex flex-row items-center justify-between">
           <CardTitle className="text-base">Histórico de Movimentações (últimas 500)</CardTitle>
-          <Button size="sm" variant="outline" onClick={() => csvDownload("movimentacoes.csv", movs.map((m: any) => ({ data: m.data_movimentacao, medicamento: m.medicamentos?.nome, tipo: m.tipo, quantidade: m.quantidade, motivo: m.motivo, responsavel: m.responsavel })))}>
+          <Button size="sm" variant="outline" onClick={() => csvDownload("movimentacoes.csv", movs.map((m) => ({ data: m.data_movimentacao, medicamento: m.medicamentos?.nome, tipo: m.tipo, quantidade: m.quantidade, motivo: m.motivo, responsavel: m.responsavel })))}>
             <Download className="h-4 w-4 mr-2" /> CSV
           </Button>
         </CardHeader>

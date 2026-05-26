@@ -12,6 +12,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { supabase } from "@/integrations/supabase/client";
 import { useQueryClient } from "@tanstack/react-query";
 import { VIAS_ADMINISTRACAO, UNIDADES_DOSE } from "@/lib/medicamento-utils";
+import { FormField as Field } from "@/components/FormField";
 import type { Tables } from "@/integrations/supabase/types";
 
 const schema = z.object({
@@ -20,7 +21,10 @@ const schema = z.object({
   dose_aplicada: z.coerce.number().positive("Deve ser maior que zero"),
   unidade_dose: z.string().min(1, "Obrigatório"),
   unidades_consumidas: z.coerce.number().int().min(1, "Mínimo 1"),
-  data_administracao: z.string().min(1, "Obrigatório"),
+  data_administracao: z.string().min(1, "Obrigatório").refine(
+    (val) => new Date(val) <= new Date(),
+    "A data não pode ser no futuro"
+  ),
   responsavel: z.string().max(200).optional().or(z.literal("")),
   via_administracao: z.string().optional().or(z.literal("")),
   observacoes: z.string().max(1000).optional().or(z.literal("")),
@@ -63,6 +67,12 @@ export function AdministracaoFormDialog({
   const selectedMed = medicamentos.find((m) => m.id === selectedMedId);
 
   async function onSubmit(values: FormValues) {
+    if (selectedMed && values.unidades_consumidas > selectedMed.quantidade_atual) {
+      form.setError("unidades_consumidas", {
+        message: `Estoque insuficiente. Disponível: ${selectedMed.quantidade_atual}`,
+      });
+      return;
+    }
     setSaving(true);
     const { error } = await supabase.rpc("registrar_administracao", {
       p_medicamento_id: values.medicamento_id,
@@ -210,17 +220,3 @@ export function AdministracaoFormDialog({
   );
 }
 
-function Field({
-  label, children, error, hint, className,
-}: {
-  label: string; children: React.ReactNode; error?: string; hint?: string; className?: string;
-}) {
-  return (
-    <div className={`space-y-1.5 ${className ?? ""}`}>
-      <Label className="text-sm">{label}</Label>
-      {children}
-      {hint && <p className="text-xs text-muted-foreground">{hint}</p>}
-      {error && <p className="text-xs text-destructive">{error}</p>}
-    </div>
-  );
-}
