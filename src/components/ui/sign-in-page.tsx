@@ -208,29 +208,35 @@ export function SignInPage({
               </button>
             </form>
 
-            <div className="sip-divider sip-in" style={step(7)}>
-              <span className="sip-divider__line" />
-              <span className="sip-divider__text">Ou continue com</span>
-            </div>
+            {onGoogleSignIn && (
+              <>
+                <div className="sip-divider sip-in" style={step(7)}>
+                  <span className="sip-divider__line" />
+                  <span className="sip-divider__text">Ou continue com</span>
+                </div>
 
-            <button type="button" className="sip-google-btn sip-in" style={step(8)} onClick={onGoogleSignIn}>
-              <GoogleIcon />
-              Continuar com Google
-            </button>
+                <button type="button" className="sip-google-btn sip-in" style={step(8)} onClick={onGoogleSignIn}>
+                  <GoogleIcon />
+                  Continuar com Google
+                </button>
+              </>
+            )}
 
-            <p className="sip-signup sip-in" style={step(9)}>
-              Novo por aqui?{" "}
-              <a
-                href="#"
-                className="sip-link"
-                onClick={e => {
-                  e.preventDefault()
-                  onCreateAccount?.()
-                }}
-              >
-                Criar conta
-              </a>
-            </p>
+            {onCreateAccount && (
+              <p className="sip-signup sip-in" style={step(9)}>
+                Novo por aqui?{" "}
+                <a
+                  href="#"
+                  className="sip-link"
+                  onClick={e => {
+                    e.preventDefault()
+                    onCreateAccount()
+                  }}
+                >
+                  Criar conta
+                </a>
+              </p>
+            )}
           </div>
         </section>
 

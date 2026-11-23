@@ -50,9 +50,7 @@ function LoginPage() {
           toast.dismiss(id);
         }
       }}
-      onGoogleSignIn={() => toast.info("Login com Google não disponível")}
       onResetPassword={() => toast.info("Contate o administrador para redefinir a senha")}
-      onCreateAccount={() => toast.info("Contate o administrador para criar uma conta")}
     />
   );
 }
