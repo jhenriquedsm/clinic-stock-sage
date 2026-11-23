@@ -106,8 +106,8 @@ function RelatoriosPage() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-semibold tracking-tight">Relatórios</h1>
-          <p className="text-sm text-muted-foreground">Relatórios de estoque e validade</p>
+          <h1 className="text-[26px] font-extrabold tracking-tight">Relatórios</h1>
+          <p className="mt-1 text-sm text-muted-foreground">Relatórios de estoque e validade</p>
         </div>
         <Button variant="outline" onClick={() => window.print()}><Printer className="h-4 w-4 mr-2" /> Imprimir</Button>
       </div>

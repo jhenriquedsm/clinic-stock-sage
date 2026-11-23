@@ -79,8 +79,8 @@ function AdministracoesPage() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-semibold tracking-tight">Administrações</h1>
-          <p className="text-sm text-muted-foreground">{filtered.length} registro(s)</p>
+          <h1 className="text-[26px] font-extrabold tracking-tight">Administrações</h1>
+          <p className="mt-1 text-sm text-muted-foreground">{filtered.length} registro(s)</p>
         </div>
         <Button onClick={() => setOpenForm(true)}>
           <Plus className="h-4 w-4 mr-2" /> Nova Administração

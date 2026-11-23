@@ -12,15 +12,15 @@ function AppLayout() {
 
   return (
     <SidebarProvider>
-      <div className="flex min-h-screen w-full bg-muted/30">
+      <div className="flex min-h-screen w-full bg-background">
         <AppSidebar />
         <SidebarInset className="flex-1">
-          <header className="sticky top-0 z-10 flex h-14 items-center gap-2 border-b bg-background/80 px-4 backdrop-blur">
-            <SidebarTrigger />
+          <header className="sticky top-0 z-10 flex h-[69px] items-center gap-2 border-b bg-background/90 px-5 backdrop-blur">
+            <SidebarTrigger className="text-muted-foreground hover:text-foreground" />
             <div className="h-4 w-px bg-border" />
-            <span className="text-sm font-medium text-muted-foreground">Laboratório • Gestão de Medicamentos</span>
+            <span className="text-xs font-medium text-muted-foreground">Laboratório</span>
           </header>
-          <main className="flex-1 p-6">
+          <main className="flex-1 p-7">
             <Outlet />
           </main>
         </SidebarInset>

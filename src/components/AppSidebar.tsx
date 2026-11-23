@@ -6,6 +6,7 @@ import {
   SidebarFooter,
   SidebarGroup,
   SidebarGroupContent,
+  SidebarGroupLabel,
   SidebarHeader,
   SidebarMenu,
   SidebarMenuButton,
@@ -13,11 +14,14 @@ import {
 } from "@/components/ui/sidebar";
 import { useAuth } from "@/hooks/use-auth";
 
-const items = [
+const mainItems = [
   { title: "Dashboard", url: "/dashboard", icon: LayoutDashboard },
   { title: "Medicamentos", url: "/medicamentos", icon: Pill },
   { title: "Administrações", url: "/administracoes", icon: Syringe },
   { title: "Movimentações", url: "/movimentacoes", icon: ArrowLeftRight },
+];
+
+const managementItems = [
   { title: "Relatórios", url: "/relatorios", icon: FileBarChart },
   { title: "Configurações", url: "/configuracoes", icon: Settings },
 ];
@@ -29,26 +33,50 @@ export function AppSidebar() {
   return (
     <Sidebar collapsible="icon">
       <SidebarHeader className="border-b border-sidebar-border">
-        <div className="flex items-center gap-2 px-2 py-2">
-          <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary text-primary-foreground">
+        <div className="flex items-center gap-2.5 px-2 py-2">
+          <div className="flex h-9 w-9 flex-none items-center justify-center rounded-[11px] bg-primary text-primary-foreground">
             <Activity className="h-5 w-5" />
           </div>
           <div className="flex flex-col group-data-[collapsible=icon]:hidden">
-            <span className="text-sm font-semibold leading-tight">Docctor Lab</span>
-            <span className="text-xs text-muted-foreground leading-tight">Gestão de Laboratório</span>
+            <span className="font-display text-sm font-bold leading-tight tracking-tight text-foreground">Docctor Lab</span>
+            <span className="text-[11px] font-medium text-muted-foreground leading-tight">Gestão de laboratório</span>
           </div>
         </div>
       </SidebarHeader>
+
       <SidebarContent>
         <SidebarGroup>
+          <SidebarGroupLabel className="text-[10px] font-bold tracking-widest text-muted-foreground/70 uppercase group-data-[collapsible=icon]:hidden">
+            Principal
+          </SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
-              {items.map((item) => (
+              {mainItems.map((item) => (
                 <SidebarMenuItem key={item.url}>
                   <SidebarMenuButton asChild isActive={pathname === item.url} tooltip={item.title}>
                     <Link to={item.url} className="flex items-center gap-3">
                       <item.icon className="h-4 w-4" />
-                      <span>{item.title}</span>
+                      <span className="font-medium">{item.title}</span>
+                    </Link>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+              ))}
+            </SidebarMenu>
+          </SidebarGroupContent>
+        </SidebarGroup>
+
+        <SidebarGroup>
+          <SidebarGroupLabel className="text-[10px] font-bold tracking-widest text-muted-foreground/70 uppercase group-data-[collapsible=icon]:hidden">
+            Gestão
+          </SidebarGroupLabel>
+          <SidebarGroupContent>
+            <SidebarMenu>
+              {managementItems.map((item) => (
+                <SidebarMenuItem key={item.url}>
+                  <SidebarMenuButton asChild isActive={pathname === item.url} tooltip={item.title}>
+                    <Link to={item.url} className="flex items-center gap-3">
+                      <item.icon className="h-4 w-4" />
+                      <span className="font-medium">{item.title}</span>
                     </Link>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
@@ -57,12 +85,13 @@ export function AppSidebar() {
           </SidebarGroupContent>
         </SidebarGroup>
       </SidebarContent>
+
       <SidebarFooter className="border-t border-sidebar-border">
-        <div className="flex flex-col gap-2 px-2 py-2">
-          <div className="text-xs text-muted-foreground truncate group-data-[collapsible=icon]:hidden">
+        <div className="flex flex-col gap-1.5 px-2 py-2">
+          <div className="truncate px-2 text-[11px] text-muted-foreground group-data-[collapsible=icon]:hidden">
             {user?.email}
           </div>
-          <SidebarMenuButton onClick={signOut} tooltip="Sair">
+          <SidebarMenuButton onClick={signOut} tooltip="Sair" className="text-muted-foreground hover:text-foreground">
             <LogOut className="h-4 w-4" />
             <span>Sair</span>
           </SidebarMenuButton>

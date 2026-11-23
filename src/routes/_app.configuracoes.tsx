@@ -52,8 +52,8 @@ function ConfigPage() {
   return (
     <div className="space-y-6 max-w-3xl">
       <div>
-        <h1 className="text-2xl font-semibold tracking-tight">Configurações</h1>
-        <p className="text-sm text-muted-foreground">Ajuste alertas e categorias do sistema</p>
+        <h1 className="text-[26px] font-extrabold tracking-tight">Configurações</h1>
+        <p className="mt-1 text-sm text-muted-foreground">Ajuste alertas e categorias do sistema</p>
       </div>
 
       <Card>

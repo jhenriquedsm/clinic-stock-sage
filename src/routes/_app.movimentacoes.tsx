@@ -92,12 +92,12 @@ function MovimentacoesPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-semibold tracking-tight">Movimentações</h1>
-        <p className="text-sm text-muted-foreground">Registre entradas e saídas de medicamentos</p>
+        <h1 className="text-[26px] font-extrabold tracking-tight">Movimentações</h1>
+        <p className="mt-1 text-sm text-muted-foreground">Registre entradas e saídas de medicamentos</p>
       </div>
 
       <Card>
-        <CardHeader><CardTitle className="text-base">Nova movimentação</CardTitle></CardHeader>
+        <CardHeader><CardTitle className="text-sm font-bold">Nova movimentação</CardTitle></CardHeader>
         <CardContent>
           <form onSubmit={submit} className="grid gap-4 md:grid-cols-2">
             <div className="space-y-1.5">
@@ -149,7 +149,7 @@ function MovimentacoesPage() {
 
       <Card>
         <CardHeader>
-          <CardTitle className="text-base">Histórico</CardTitle>
+          <CardTitle className="text-sm font-bold">Histórico</CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="grid gap-3 md:grid-cols-2">
