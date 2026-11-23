@@ -1,5 +1,6 @@
 import { Link, useRouterState } from "@tanstack/react-router";
-import { LayoutDashboard, Pill, ArrowLeftRight, FileBarChart, Settings, LogOut, Activity, Syringe } from "lucide-react";
+import { LayoutDashboard, Pill, ArrowLeftRight, FileBarChart, Settings, LogOut, Activity, Syringe, Sun, Moon } from "lucide-react";
+import { useTheme } from "@/hooks/use-theme";
 import {
   Sidebar,
   SidebarContent,
@@ -29,6 +30,7 @@ const managementItems = [
 export function AppSidebar() {
   const pathname = useRouterState({ select: (s) => s.location.pathname });
   const { user, signOut } = useAuth();
+  const { isDark, setTheme } = useTheme();
 
   return (
     <Sidebar collapsible="icon">
@@ -91,6 +93,14 @@ export function AppSidebar() {
           <div className="truncate px-2 text-[11px] text-muted-foreground group-data-[collapsible=icon]:hidden">
             {user?.email}
           </div>
+          <SidebarMenuButton
+            onClick={() => setTheme(isDark ? "light" : "dark")}
+            tooltip={isDark ? "Modo claro" : "Modo escuro"}
+            className="text-muted-foreground hover:text-foreground"
+          >
+            {isDark ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
+            <span>{isDark ? "Modo claro" : "Modo escuro"}</span>
+          </SidebarMenuButton>
           <SidebarMenuButton onClick={signOut} tooltip="Sair" className="text-muted-foreground hover:text-foreground">
             <LogOut className="h-4 w-4" />
             <span>Sair</span>
