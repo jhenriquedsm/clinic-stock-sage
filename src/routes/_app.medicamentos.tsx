@@ -67,8 +67,8 @@ function MedicamentosPage() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-semibold tracking-tight">Medicamentos</h1>
-          <p className="text-sm text-muted-foreground">{filtered.length} medicamento(s)</p>
+          <h1 className="text-[26px] font-extrabold tracking-tight">Medicamentos</h1>
+          <p className="mt-1 text-sm text-muted-foreground">{filtered.length} medicamento(s) encontrado(s)</p>
         </div>
         <Button onClick={() => { setEditing(null); setOpenForm(true); }}>
           <Plus className="h-4 w-4 mr-2" /> Novo Medicamento

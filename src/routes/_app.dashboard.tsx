@@ -2,7 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Pill, AlertTriangle, Clock, XCircle, TrendingUp } from "lucide-react";
+import { Pill, AlertTriangle, Clock, XCircle, TrendingDown } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { getStatusValidade, getStatusEstoque } from "@/lib/medicamento-utils";
 import { ValidadeBadge, EstoqueBadge } from "@/components/StatusBadge";
@@ -69,28 +69,33 @@ function DashboardPage() {
     }, {})
   ).map(([name, value]) => ({ name, value }));
 
+  const today = format(new Date(), "EEEE, dd 'de' MMMM", { locale: ptBR });
+  const todayCap = today.charAt(0).toUpperCase() + today.slice(1);
+
   return (
     <div className="space-y-6">
-      <div>
-        <h1 className="text-2xl font-semibold tracking-tight">Dashboard</h1>
-        <p className="text-sm text-muted-foreground">Visão geral do estoque de medicamentos</p>
+      <div className="flex items-start justify-between gap-4">
+        <div>
+          <h1 className="text-[26px] font-extrabold tracking-tight">Visão geral do laboratório</h1>
+          <p className="mt-1 text-sm text-muted-foreground">{todayCap} · Acompanhe seus medicamentos e vencimentos</p>
+        </div>
       </div>
 
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-        <StatCard icon={Pill} label="Total de Medicamentos" value={stats.total} tone="primary" />
-        <StatCard icon={TrendingUp} label="Estoque Crítico" value={stats.criticos} tone="warning" />
-        <StatCard icon={Clock} label="Vencendo (30 dias)" value={stats.vencendo} tone="warning" />
-        <StatCard icon={XCircle} label="Vencidos" value={stats.vencidos} tone="danger" />
+        <StatCard icon={Pill} label="Medicamentos cadastrados" value={stats.total} tone="primary" />
+        <StatCard icon={TrendingDown} label="Estoque crítico" value={stats.criticos} tone="warning" />
+        <StatCard icon={Clock} label="Vencem em até 30 dias" value={stats.vencendo} tone="warning" />
+        <StatCard icon={XCircle} label="Medicamentos vencidos" value={stats.vencidos} tone={stats.vencidos > 0 ? "danger" : "success"} />
       </div>
 
       <div className="grid gap-6 lg:grid-cols-3">
         <Card className="lg:col-span-2">
           <CardHeader className="flex flex-row items-center justify-between">
-            <CardTitle className="flex items-center gap-2 text-base">
-              <AlertTriangle className="h-4 w-4 text-warning-foreground" />
-              Alertas Prioritários de Vencimento
+            <CardTitle className="flex items-center gap-2 text-sm font-bold">
+              <AlertTriangle className="h-4 w-4 text-warning" />
+              Atenção aos próximos vencimentos
             </CardTitle>
-            <Link to="/medicamentos" className="text-xs text-primary hover:underline">Ver todos</Link>
+            <Link to="/medicamentos" className="text-xs font-bold text-primary hover:underline">Ver todos →</Link>
           </CardHeader>
           <CardContent>
             {alertasValidade.length === 0 ? (
@@ -123,7 +128,7 @@ function DashboardPage() {
         </Card>
 
         <Card>
-          <CardHeader><CardTitle className="text-base">Distribuição por Categoria</CardTitle></CardHeader>
+          <CardHeader><CardTitle className="text-sm font-bold">Distribuição por Categoria</CardTitle></CardHeader>
           <CardContent className="h-[280px]">
             {porCategoria.length === 0 ? (
               <p className="text-sm text-muted-foreground py-6 text-center">Sem dados</p>
@@ -146,7 +151,7 @@ function DashboardPage() {
 
       <div className="grid gap-6 lg:grid-cols-2">
         <Card>
-          <CardHeader><CardTitle className="text-base">Estoque Abaixo do Mínimo</CardTitle></CardHeader>
+          <CardHeader><CardTitle className="text-sm font-bold">Estoque abaixo do mínimo</CardTitle></CardHeader>
           <CardContent>
             {estoqueBaixo.length === 0 ? (
               <p className="text-sm text-muted-foreground py-6 text-center">Todos os medicamentos com estoque adequado.</p>
@@ -176,7 +181,7 @@ function DashboardPage() {
         </Card>
 
         <Card>
-          <CardHeader><CardTitle className="text-base">Últimas Movimentações</CardTitle></CardHeader>
+          <CardHeader><CardTitle className="text-sm font-bold">Últimas movimentações</CardTitle></CardHeader>
           <CardContent>
             {movs.length === 0 ? (
               <p className="text-sm text-muted-foreground py-6 text-center">Nenhuma movimentação registrada.</p>
@@ -215,21 +220,22 @@ function DashboardPage() {
   );
 }
 
-function StatCard({ icon: Icon, label, value, tone }: { icon: React.ElementType; label: string; value: number; tone: "primary" | "warning" | "danger" }) {
+function StatCard({ icon: Icon, label, value, tone }: { icon: React.ElementType; label: string; value: number; tone: "primary" | "warning" | "danger" | "success" }) {
   const toneClass = {
     primary: "bg-primary/10 text-primary",
-    warning: "bg-warning/20 text-warning-foreground",
+    warning: "bg-warning/15 text-warning",
     danger: "bg-destructive/15 text-destructive",
+    success: "bg-success/15 text-success",
   }[tone];
   return (
     <Card>
-      <CardContent className="flex items-center gap-4 p-5">
-        <div className={`flex h-12 w-12 items-center justify-center rounded-lg ${toneClass}`}>
-          <Icon className="h-6 w-6" />
-        </div>
+      <CardContent className="flex items-center justify-between gap-4 p-[17px]">
         <div>
-          <p className="text-sm text-muted-foreground">{label}</p>
-          <p className="text-2xl font-semibold">{value}</p>
+          <p className="text-[11px] text-muted-foreground">{label}</p>
+          <p className="mt-2 font-display text-[29px] font-extrabold leading-none tracking-tighter">{value}</p>
+        </div>
+        <div className={`flex h-[38px] w-[38px] flex-none items-center justify-center rounded-[11px] ${toneClass}`}>
+          <Icon className="h-[18px] w-[18px]" />
         </div>
       </CardContent>
     </Card>

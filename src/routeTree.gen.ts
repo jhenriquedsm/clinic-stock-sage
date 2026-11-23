@@ -33,12 +33,6 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
-const AppAdministracoesRoute = AppAdministracoesRouteImport.update({
-  id: '/administracoes',
-  path: '/administracoes',
-  getParentRoute: () => AppRoute,
-} as any)
-
 const AppRelatoriosRoute = AppRelatoriosRouteImport.update({
   id: '/relatorios',
   path: '/relatorios',
@@ -62,6 +56,11 @@ const AppDashboardRoute = AppDashboardRouteImport.update({
 const AppConfiguracoesRoute = AppConfiguracoesRouteImport.update({
   id: '/configuracoes',
   path: '/configuracoes',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppAdministracoesRoute = AppAdministracoesRouteImport.update({
+  id: '/administracoes',
+  path: '/administracoes',
   getParentRoute: () => AppRoute,
 } as any)
 
@@ -160,13 +159,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/_app/administracoes': {
-      id: '/_app/administracoes'
-      path: '/administracoes'
-      fullPath: '/administracoes'
-      preLoaderRoute: typeof AppAdministracoesRouteImport
-      parentRoute: typeof AppRoute
-    }
     '/_app/relatorios': {
       id: '/_app/relatorios'
       path: '/relatorios'
@@ -200,6 +192,13 @@ declare module '@tanstack/react-router' {
       path: '/configuracoes'
       fullPath: '/configuracoes'
       preLoaderRoute: typeof AppConfiguracoesRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/administracoes': {
+      id: '/_app/administracoes'
+      path: '/administracoes'
+      fullPath: '/administracoes'
+      preLoaderRoute: typeof AppAdministracoesRouteImport
       parentRoute: typeof AppRoute
     }
   }
