@@ -6,26 +6,7 @@ import type { Testimonial } from "@/components/ui/sign-in-page";
 
 export const Route = createFileRoute("/login")({ component: LoginPage });
 
-const TESTIMONIALS: Testimonial[] = [
-  {
-    avatarSrc: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=160&h=160&q=80&auto=format&fit=crop&crop=faces",
-    name: "Marina Costa",
-    handle: "@marinadigital",
-    text: "Plataforma incrível! A experiência é fluida e os recursos são exatamente o que eu precisava.",
-  },
-  {
-    avatarSrc: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=160&h=160&q=80&auto=format&fit=crop&crop=faces",
-    name: "Rafael Lima",
-    handle: "@rafatech",
-    text: "Mudou meu jeito de trabalhar. Design limpo, recursos fortes e um suporte excelente.",
-  },
-  {
-    avatarSrc: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=160&h=160&q=80&auto=format&fit=crop&crop=faces",
-    name: "Diego Martins",
-    handle: "@diegocria",
-    text: "Já testei várias plataformas, e esta se destaca. Intuitiva, confiável e útil de verdade no dia a dia.",
-  },
-];
+const TESTIMONIALS: Testimonial[] = [];
 
 function LoginPage() {
   const { user, loading, signIn } = useAuth();

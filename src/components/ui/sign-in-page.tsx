@@ -115,7 +115,7 @@ function TestimonialCard({ testimonial, delay }: { testimonial: Testimonial; del
 const step = (n: number) => ({ "--sip-delay": n * 100 + "ms" }) as React.CSSProperties
 
 export function SignInPage({
-  title = <span className="sip-title__light">Boas-vindas</span>,
+  title = <span className="sip-title__light">Docctor Lab</span>,
   description = "Entre na sua conta e continue de onde parou",
   heroImageSrc,
   testimonials = [],
