@@ -28,6 +28,7 @@ export default function SignInPageDemo() {
       <SignInPage
         theme="dark"
         heroImageSrc="https://images.unsplash.com/photo-1623682687826-fe06bf64e6d8?w=1600&q=80&auto=format&fit=crop"
+        testimonials={TESTIMONIALS}
         onSignIn={event => {
           event.preventDefault()
           const data = new FormData(event.currentTarget)
